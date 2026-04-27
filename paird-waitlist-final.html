@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>paird · Join the Waitlist</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,900&family=Inter:wght@400;500;600;700;800&display=swap');
+
+    *{ box-sizing:border-box; margin:0; padding:0 }
+
+    body{
+      min-height:100vh;
+      background:#050815;
+      font-family:'Inter',sans-serif;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:40px 20px;
+      position:relative;
+      overflow-x:hidden;
+    }
+
+    /* Background orbs */
+    body::before{
+      content:'';
+      position:fixed;
+      width:600px; height:600px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(124,58,237,0.28) 0%,transparent 70%);
+      top:-200px; left:-150px;
+      pointer-events:none;
+    }
+    body::after{
+      content:'';
+      position:fixed;
+      width:500px; height:500px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(244,114,182,0.18) 0%,transparent 70%);
+      bottom:-150px; right:-100px;
+      pointer-events:none;
+    }
+
+    .card{
+      background:rgba(22,22,42,0.8);
+      border:0.5px solid rgba(192,132,252,0.2);
+      border-radius:24px;
+      padding:52px 48px;
+      width:100%;
+      max-width:520px;
+      position:relative;
+      z-index:1;
+      backdrop-filter:blur(20px);
+    }
+
+    /* Top accent bar */
+    .card::before{
+      content:'';
+      position:absolute;
+      top:0; left:0; right:0;
+      height:3px;
+      border-radius:24px 24px 0 0;
+      background:linear-gradient(90deg,#E0AAFF,#C084FC,#F472B6);
+    }
+
+    .logo{
+      font-family:'Playfair Display',serif;
+      font-size:52px;
+      font-weight:900;
+      font-style:italic;
+      letter-spacing:-2px;
+      background:linear-gradient(180deg,#E0AAFF,#C084FC,#F472B6);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      margin-bottom:8px;
+      display:block;
+    }
+
+    .headline{
+      font-size:15px;
+      color:rgba(255,255,255,0.45);
+      margin-bottom:36px;
+      line-height:1.5;
+    }
+
+    .headline strong{
+      color:rgba(255,255,255,0.8);
+      font-weight:600;
+    }
+
+    /* Event pills */
+    .pills{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:36px;
+    }
+
+    .pill{
+      border-radius:20px;
+      padding:5px 14px;
+      font-size:12px;
+      font-weight:700;
+      border:0.5px solid;
+    }
+
+    .pill-purple{ color:#C084FC; border-color:rgba(192,132,252,0.4); background:rgba(192,132,252,0.1) }
+    .pill-pink{   color:#F472B6; border-color:rgba(244,114,182,0.4); background:rgba(244,114,182,0.1) }
+    .pill-green{  color:#34D399; border-color:rgba(52,211,153,0.4);  background:rgba(52,211,153,0.1) }
+    .pill-gold{   color:#FBBF24; border-color:rgba(251,191,36,0.4);  background:rgba(251,191,36,0.1) }
+
+    /* Form */
+    .form{ display:flex; flex-direction:column; gap:16px }
+
+    label{
+      font-size:11px;
+      font-weight:700;
+      color:#C084FC;
+      letter-spacing:0.5px;
+      text-transform:uppercase;
+      margin-bottom:6px;
+      display:block;
+    }
+
+    input, select{
+      width:100%;
+      background:rgba(255,255,255,0.04);
+      border:0.5px solid rgba(192,132,252,0.25);
+      border-radius:12px;
+      padding:14px 16px;
+      font-size:15px;
+      color:#fff;
+      font-family:'Inter',sans-serif;
+      outline:none;
+      transition:border-color .2s;
+      appearance:none;
+      -webkit-appearance:none;
+    }
+
+    input::placeholder{ color:rgba(255,255,255,0.25) }
+
+    input:focus, select:focus{
+      border-color:rgba(192,132,252,0.6);
+      background:rgba(192,132,252,0.05);
+    }
+
+    select option{
+      background:#16162a;
+      color:#fff;
+    }
+
+    /* Select arrow */
+    .select-wrap{ position:relative }
+    .select-wrap::after{
+      content:'›';
+      position:absolute;
+      right:16px;
+      top:50%;
+      transform:translateY(-50%) rotate(90deg);
+      color:rgba(192,132,252,0.6);
+      font-size:18px;
+      pointer-events:none;
+    }
+
+    .row{ display:grid; grid-template-columns:1fr 1fr; gap:16px }
+
+    /* Events checkboxes */
+    .events-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+    }
+
+    .event-check{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(255,255,255,0.03);
+      border:0.5px solid rgba(255,255,255,0.08);
+      border-radius:10px;
+      padding:10px 14px;
+      cursor:pointer;
+      transition:all .2s;
+    }
+
+    .event-check:hover{ border-color:rgba(192,132,252,0.3); background:rgba(192,132,252,0.06) }
+    .event-check input[type=checkbox]{ display:none }
+
+    .event-check.checked{
+      border-color:rgba(192,132,252,0.5);
+      background:rgba(192,132,252,0.1);
+    }
+
+    .check-box{
+      width:18px; height:18px;
+      border-radius:5px;
+      border:1.5px solid rgba(255,255,255,0.2);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+      transition:all .2s;
+    }
+
+    .event-check.checked .check-box{
+      background:#C084FC;
+      border-color:#C084FC;
+    }
+
+    .check-mark{ color:#000; font-size:11px; font-weight:900; display:none }
+    .event-check.checked .check-mark{ display:block }
+
+    .event-label{ font-size:13px; color:rgba(255,255,255,0.65); font-weight:500 }
+    .event-check.checked .event-label{ color:#C084FC; font-weight:600 }
+
+    /* Submit */
+    .submit-btn{
+      background:linear-gradient(135deg,#7C3AED,#C084FC);
+      border:none;
+      border-radius:14px;
+      padding:16px;
+      font-size:16px;
+      font-weight:800;
+      color:#fff;
+      cursor:pointer;
+      transition:opacity .2s, transform .1s;
+      width:100%;
+      margin-top:8px;
+      font-family:'Inter',sans-serif;
+      letter-spacing:0.3px;
+    }
+
+    .submit-btn:hover{ opacity:0.9 }
+    .submit-btn:active{ transform:scale(0.99) }
+    .submit-btn:disabled{ opacity:0.5; cursor:not-allowed }
+
+    /* Social proof -->
+    .proof{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:24px;
+      justify-content:center;
+    }
+
+    .avatars{ display:flex }
+    .av{
+      width:28px; height:28px;
+      border-radius:14px;
+      border:2px solid #050815;
+      margin-left:-8px;
+    }
+    .av:first-child{ margin-left:0 }
+
+    .proof-text{
+      font-size:13px;
+      color:rgba(255,255,255,0.35);
+    }
+
+    .proof-text span{ color:#C084FC; font-weight:700 }
+
+    /* Success screen */
+    .success{
+      display:none;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      gap:16px;
+      padding:20px 0;
+    }
+
+    .success-emoji{ font-size:64px }
+    .success-title{ font-size:28px; font-weight:800; color:#fff }
+    .success-sub{ font-size:15px; color:rgba(255,255,255,0.45); line-height:1.6 }
+    .success-sub strong{ color:#C084FC }
+
+    .divider{
+      height:0.5px;
+      background:rgba(255,255,255,0.08);
+      margin:4px 0;
+    }
+
+    /* Error */
+    .error-msg{
+      font-size:13px;
+      color:#F87171;
+      display:none;
+      margin-top:-8px;
+    }
+
+    @media(max-width:480px){
+      .card{ padding:36px 24px }
+      .row{ grid-template-columns:1fr }
+      .logo{ font-size:42px }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- Logo -->
+  <span class="logo">paird.</span>
+  <p class="headline">
+    <strong>Find your date for any Greek life event.</strong><br>
+    No group chat chaos. No awkward asks. Just post your event and get requests from verified students at your school.
+  </p>
+
+  <!-- Event pills -->
+  <div class="pills">
+    <span class="pill pill-purple">Semi-formals</span>
+    <span class="pill pill-pink">Date functions</span>
+    <span class="pill pill-green">Mixers</span>
+    <span class="pill pill-gold">Socials</span>
+  </div>
+
+  <!-- Form -->
+  <form class="form" id="waitlistForm">
+
+    <div class="row">
+      <div>
+        <label>First name</label>
+        <input type="text" id="firstName" placeholder="Olivia" required/>
+      </div>
+      <div>
+        <label>Last name</label>
+        <input type="text" id="lastName" placeholder="Johnson" required/>
+      </div>
+    </div>
+
+    <div>
+      <label>University email (.edu)</label>
+      <input type="email" id="email" placeholder="you@ufl.edu" required/>
+      <p class="error-msg" id="emailError">Please use your .edu university email.</p>
+    </div>
+
+    <div>
+      <label>School</label>
+      <div class="select-wrap">
+        <select id="school" required>
+          <option value="" disabled selected>Select your school</option>
+          <option>University of Florida</option>
+          <option>Florida State University</option>
+          <option>University of Central Florida</option>
+          <option>University of South Florida</option>
+          <option>Florida International University</option>
+          <option>Florida Atlantic University</option>
+          <option>University of North Florida</option>
+          <option>Florida Gulf Coast University</option>
+          <option>University of West Florida</option>
+          <option>Florida A&M University</option>
+          <option>University of Miami</option>
+          <option>Rollins College</option>
+          <option>Stetson University</option>
+          <option>Other (we'll add your school)</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label>Chapter / Organization</label>
+      <input type="text" id="chapter" placeholder="e.g. Chi Omega, Sigma Chi" required/>
+    </div>
+
+    <div>
+      <label>Year</label>
+      <div class="select-wrap">
+        <select id="year" required>
+          <option value="" disabled selected>Select your year</option>
+          <option>Freshman</option>
+          <option>Sophomore</option>
+          <option>Junior</option>
+          <option>Senior</option>
+          <option>Grad student</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label>Which events do you need dates for? <span style="color:rgba(255,255,255,0.3);text-transform:none;font-weight:400">(select all that apply)</span></label>
+      <div class="events-grid">
+        <div class="event-check" onclick="toggleEvent(this,'Semi-formals')">
+          <input type="checkbox"/>
+          <div class="check-box"><span class="check-mark">✓</span></div>
+          <span class="event-label">Semi-formals</span>
+        </div>
+        <div class="event-check" onclick="toggleEvent(this,'Date functions')">
+          <input type="checkbox"/>
+          <div class="check-box"><span class="check-mark">✓</span></div>
+          <span class="event-label">Date functions</span>
+        </div>
+        <div class="event-check" onclick="toggleEvent(this,'Mixers')">
+          <input type="checkbox"/>
+          <div class="check-box"><span class="check-mark">✓</span></div>
+          <span class="event-label">Mixers</span>
+        </div>
+        <div class="event-check" onclick="toggleEvent(this,'Socials')">
+          <input type="checkbox"/>
+          <div class="check-box"><span class="check-mark">✓</span></div>
+          <span class="event-label">Socials</span>
+        </div>
+        <div class="event-check" onclick="toggleEvent(this,'Formals')">
+          <input type="checkbox"/>
+          <div class="check-box"><span class="check-mark">✓</span></div>
+          <span class="event-label">Formals</span>
+        </div>
+        <div class="event-check" onclick="toggleEvent(this,'All of the above')">
+          <input type="checkbox"/>
+          <div class="check-box"><span class="check-mark">✓</span></div>
+          <span class="event-label">All of the above</span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <label>Instagram handle <span style="color:rgba(255,255,255,0.3);text-transform:none;font-weight:400">(optional — for giveaway entries)</span></label>
+      <input type="text" id="instagram" placeholder="@yourhandle"/>
+    </div>
+
+    <div class="divider"></div>
+
+    <button type="submit" class="submit-btn" id="submitBtn">
+      Join the waitlist →
+    </button>
+
+  </form>
+
+  <!-- Success state -->
+  <div class="success" id="successState">
+    <div class="success-emoji">🎉</div>
+    <div class="success-title">You're on the list!</div>
+    <p class="success-sub">
+      We'll notify you the moment paird launches at <strong id="successSchool">your school</strong>.<br><br>
+      In the meantime — follow <strong>@joinpaird</strong> on Instagram for updates, giveaways, and early access drops.
+    </p>
+  </div>
+
+  <!-- Social proof -->
+  <div class="proof" id="proofRow">
+    <div class="avatars">
+      <div class="av" style="background:linear-gradient(135deg,#C084FC,#9060D0)"></div>
+      <div class="av" style="background:linear-gradient(135deg,#F472B6,#D040A0)"></div>
+      <div class="av" style="background:linear-gradient(135deg,#34D399,#10A070)"></div>
+      <div class="av" style="background:linear-gradient(135deg,#FBBF24,#E09000)"></div>
+    </div>
+    <p class="proof-text"><span>200+</span> students already on the waitlist</p>
+  </div>
+
+</div>
+
+<script>
+  const selectedEvents = new Set()
+
+  function toggleEvent(el, value) {
+    el.classList.toggle('checked')
+    if (el.classList.contains('checked')) {
+      selectedEvents.add(value)
+    } else {
+      selectedEvents.delete(value)
+    }
+  }
+
+  document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
+    e.preventDefault()
+
+    const firstName = document.getElementById('firstName').value.trim()
+    const lastName  = document.getElementById('lastName').value.trim()
+    const email     = document.getElementById('email').value.trim().toLowerCase()
+    const school    = document.getElementById('school').value
+    const chapter   = document.getElementById('chapter').value.trim()
+    const year      = document.getElementById('year').value
+    const instagram = document.getElementById('instagram').value.trim()
+    const emailError = document.getElementById('emailError')
+
+    // Validate .edu email
+    if (!email.endsWith('.edu')) {
+      emailError.style.display = 'block'
+      document.getElementById('email').focus()
+      return
+    }
+    emailError.style.display = 'none'
+
+    const btn = document.getElementById('submitBtn')
+    btn.disabled = true
+    btn.textContent = 'Joining…'
+
+    // Build form data for Google Sheets via FormSubmit or similar
+    const data = {
+      firstName,
+      lastName,
+      email,
+      school,
+      chapter,
+      year,
+      events: [...selectedEvents].join(', ') || 'Not specified',
+      instagram,
+      submittedAt: new Date().toISOString(),
+    }
+
+    // PASTE YOUR GOOGLE APPS SCRIPT URL BELOW
+    // Get it from: Apps Script → Deploy → New deployment → Web app → Copy URL
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwqy1nUxugdEuLiW2RYEusY9PROUWrHzYrSMnK33DUHIMwp5QQ1GZlq-I8SQijD92A/exec'
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      })
+    } catch (err) {
+      // Still show success even if fetch fails due to CORS — data was sent
+      console.log('Submission note:', err)
+    }
+
+    await new Promise(r => setTimeout(r, 600))
+
+    // Show success
+    document.getElementById('waitlistForm').style.display = 'none'
+    document.getElementById('proofRow').style.display = 'none'
+    const success = document.getElementById('successState')
+    success.style.display = 'flex'
+    document.getElementById('successSchool').textContent = school || 'your school'
+  })
+</script>
+</body>
+</html>
